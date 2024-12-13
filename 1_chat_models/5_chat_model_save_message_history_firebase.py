@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from google.cloud import firestore
 from langchain_google_firestore import FirestoreChatMessageHistory
 from langchain_openai import ChatOpenAI
+from langchain_core.messages import AIMessage, HumanMessage
 
 """
 Steps to replicate this example:
@@ -17,14 +18,14 @@ Steps to replicate this example:
         - https://cloud.google.com/docs/authentication/provide-credentials-adc#local-dev
     - Set your default project to the new Firebase project you created
 5. Enable the Firestore API in the Google Cloud Console:
-    - https://console.cloud.google.com/apis/enableflow?apiid=firestore.googleapis.com&project=crewai-automation
+    - https://console.cloud.google.com/apis/enableflow?apiid=firestore.googleapis.com&project=langchaincrashcourse-a5fb3
 """
 
 load_dotenv()
 
 # Setup Firebase Firestore
-PROJECT_ID = "langchain-demo-abf48"
-SESSION_ID = "user_session_new"  # This could be a username or a unique ID
+PROJECT_ID = "langchaincrashcourse-a5fb3"
+SESSION_ID = "user1_session"  # This could be a username or a unique ID
 COLLECTION_NAME = "chat_history"
 
 # Initialize Firestore Client
@@ -51,9 +52,9 @@ while True:
     if human_input.lower() == "exit":
         break
 
-    chat_history.add_user_message(human_input)
+    chat_history.add_message(HumanMessage(content=human_input))
 
     ai_response = model.invoke(chat_history.messages)
-    chat_history.add_ai_message(ai_response.content)
+    chat_history.add_message(AIMessage(content=ai_response.content))
 
     print(f"AI: {ai_response.content}")
